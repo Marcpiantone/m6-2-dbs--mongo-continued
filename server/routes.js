@@ -1,21 +1,22 @@
 const router = require("express").Router();
-const { delay } = require("./helpers");
+//const { delay } = require("./helpers");
 
 const NUM_OF_ROWS = 8;
 const SEATS_PER_ROW = 12;
+const { getSeats } = require("./handlers");
 
 // Code that is generating the seats.
 // ----------------------------------
-const seats = {};
-const row = ["A", "B", "C", "D", "E", "F", "G", "H"];
-for (let r = 0; r < row.length; r++) {
-  for (let s = 1; s < 13; s++) {
-    seats[`${row[r]}-${s}`] = {
-      price: 225,
-      isBooked: false,
-    };
-  }
-}
+// const seats = {};
+// const row = ["A", "B", "C", "D", "E", "F", "G", "H"];
+// for (let r = 0; r < row.length; r++) {
+//   for (let s = 1; s < 13; s++) {
+//     seats[`${row[r]}-${s}`] = {
+//       price: 225,
+//       isBooked: false,
+//     };
+//   }
+// }
 // ----------------------------------
 //////// HELPERS
 const getRowName = (rowIndex) => {
@@ -39,24 +40,16 @@ const randomlyBookSeats = (num) => {
   return bookedSeats;
 };
 
-let state;
+router.get("/api/seat-availability", getSeats);
 
-router.get("/api/seat-availability", async (req, res) => {
-  if (!state) {
-    state = {
-      bookedSeats: randomlyBookSeats(30),
-    };
-  }
+// const seats=[{_id: 'A-1', isbooked:false},{}]
+// const formattedSeats ={}
+// seats.forEach(seat=>{
+//   formattedSeats[seat._id].isBooked = seat.isBooked
+// })
+// {A-1:{_id: 'A-1', isbooked:false}}
 
-  await delay(Math.random() * 3000);
-
-  return res.json({
-    seats: seats,
-    bookedSeats: state.bookedSeats,
-    numOfRows: 8,
-    seatsPerRow: 12,
-  });
-});
+//await delay(Math.random() * 3000);
 
 let lastBookingAttemptSucceeded = false;
 
@@ -69,7 +62,7 @@ router.post("/api/book-seat", async (req, res) => {
     };
   }
 
-  await delay(Math.random() * 3000);
+  //await delay(Math.random() * 3000);
 
   const isAlreadyBooked = !!state.bookedSeats[seatId];
   if (isAlreadyBooked) {
