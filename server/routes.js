@@ -3,7 +3,12 @@ const router = require("express").Router();
 
 const NUM_OF_ROWS = 8;
 const SEATS_PER_ROW = 12;
-const { getSeats, handleBooking } = require("./handlers");
+const {
+  getSeats,
+  handleBooking,
+  deleteBooking,
+  updateBooking,
+} = require("./handlers");
 
 // Code that is generating the seats.
 // ----------------------------------
@@ -98,4 +103,6 @@ router.post("/api/book-seat", handleBooking);
 //   });
 // });
 
+router.put("/api/seat-availability/deletebooking/:_id", deleteBooking);
+router.put("/api/seat-availability/updatebooking/:_id", updateBooking);
 module.exports = router;

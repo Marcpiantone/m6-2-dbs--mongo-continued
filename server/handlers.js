@@ -88,4 +88,50 @@ const handleBooking = async (req, res) => {
   }
 };
 
-module.exports = { getSeats, handleBooking };
+const deleteBooking = async (req, res) => {
+  const _id = req.params._id.toUpperCase();
+  const query = { _id };
+  const modifiedValues = {
+    $set: { isBooked: false },
+    $unset: { bookedBy: "", email: "" },
+  };
+
+  const client = await MongoClient(MONGO_URI, options);
+
+  try {
+    await client.connect();
+    const db = client.db("m6-2");
+    const collection = db.collection("seats");
+
+    const r = await collection.updateOne(query, modifiedValues);
+    assert.equal(1, r.matchedCount);
+    assert.equal(1, r.modifiedCount);
+    return res.status(200).json({
+      status: 200,
+      success: true,
+    });
+  } catch (err) {
+    res.status(500).json({ status: 500, _id, data: err.message });
+  }
+};
+
+const updateBooking = async (req, res) => {
+  const _id = req.params._id;
+  const query = { _id };
+  const fullNameTemp1 = req.body.fullName;
+  const emailTemp1 = req.body.email;
+  console.log(_id);
+
+  const modifiedName =
+    fullNameTemp1 !== undefined ? { fullNameTemp: fullNameTemp1 } : {};
+  const modifiedEmail =
+    emailTemp1 !== undefined ? { emailTemp: emailTemp1 } : {};
+  const fullName = modifiedName.fullNameTemp;
+  const email = modifiedEmail.emailTemp;
+
+  const modifiedValues = { $set: { fullName, email } };
+  console.log(modifiedValues);
+  return res.status(200).json({ message: "bacon" });
+};
+
+module.exports = { getSeats, handleBooking, deleteBooking, updateBooking };
