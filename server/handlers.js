@@ -41,13 +41,16 @@ const getSeats = async (req, res) => {
 };
 
 const handleBooking = async (req, res) => {
-  const { seatId, creditCard, expiration } = req.body;
+  console.log(req.body);
+  const { seatId, creditCard, expiration, fullName, email } = req.body;
   const client = await MongoClient(MONGO_URI, options);
 
   const _id = seatId;
 
   const query = { _id };
-  const newValues = { $set: { isBooked: true } };
+  const newValues = {
+    $set: { isBooked: true, bookedBy: fullName, email: email },
+  };
 
   console.log(query);
   console.log(newValues);
